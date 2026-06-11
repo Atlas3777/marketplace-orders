@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Grpc.AspNetCore" Version="2.80.0" />
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.8"/>
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="10.2.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Marketplace.Orders.Application\Marketplace.Orders.Application.csproj" />
+      <ProjectReference Include="..\Marketplace.Orders.Infrastructure\Marketplace.Orders.Infrastructure.csproj" />
+      <ProjectReference Include="..\Marketplace.Orders.Migrations\Marketplace.Orders.Migrations.csproj" />
+    </ItemGroup>
+
+</Project>

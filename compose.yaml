@@ -1,0 +1,17 @@
+version: '3.8'
+services:
+  orders-postgres:
+    image: postgres:16-alpine
+    container_name: marketplace-orders-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: marketplace-orders-db
+    ports:
+      - "5436:5432"
+    volumes:
+      - orders_pgdata:/var/lib/postgresql/data
+
+volumes:
+  orders_pgdata:

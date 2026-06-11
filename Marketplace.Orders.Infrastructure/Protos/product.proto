@@ -1,0 +1,96 @@
+syntax="proto3";
+
+package Marketplace.Products.Api.Protos;
+
+import "google/protobuf/timestamp.proto";
+
+service ProductServiceGrpc {
+    rpc CreateProduct (CreateProductRequest) returns (CreateProductResponse);
+    rpc GetProductList (GetProductListRequest) returns (GetProductListResponse);
+    rpc GetProductById (GetProductByIdRequest) returns (GetProductByIdResponse);
+    rpc UpdateProductById (UpdateProductByIdRequest) returns (UpdateProductByIdResponse);
+    rpc DeleteProductById (DeleteProductByIdRequest) returns (DeleteProductByIdResponse);
+}
+
+message ProductDto {
+    string id = 1;
+    string name = 2;
+    string description = 3;
+    DecimalValue price = 4;
+    double weight = 5;
+    GrpcProductCategory  category = 6;
+    google.protobuf.Timestamp created_at = 7;
+    google.protobuf.Timestamp updated_at = 8;
+
+}
+
+message CreateProductRequest {
+    string name = 1;
+    string description = 2;
+    DecimalValue price = 3;
+    double weight = 4;
+    GrpcProductCategory  category = 5;
+}
+
+message CreateProductResponse {
+    string id = 1;
+}
+
+message GetProductByIdRequest {
+    string id = 1;
+}
+
+message GetProductByIdResponse {
+    ProductDto product = 1;
+}
+
+message GetProductListRequest {
+    optional google.protobuf.Timestamp created_at = 1;
+    optional GrpcProductCategory category = 2;
+    optional string search_term = 3;
+    optional DecimalValue max_price = 4;
+    optional DecimalValue min_price = 5;
+    optional int32 page_number = 6;
+    optional int32 page_size = 7;
+}
+
+message GetProductListResponse {
+    repeated ProductDto products = 1;
+}
+
+message UpdateProductByIdRequest {
+    optional string name = 1;
+    optional string description = 2;
+    optional DecimalValue price = 3;
+    optional double weight = 4;
+    optional GrpcProductCategory category = 5;
+    string id = 6;
+}
+
+message UpdateProductByIdResponse {
+    ProductDto product = 1;
+}
+
+message DeleteProductByIdRequest {
+    string id = 1;
+}
+
+message DeleteProductByIdResponse {
+}
+
+enum GrpcProductCategory  {
+    UNSPECIFIED_CATEGORY = 0;
+    ELECTRONICS = 1;
+    HOME_APPLIANCES = 2;
+    CLOTHING_AND_SHOES = 3;
+    HEALTH_AND_BEAUTY = 4;
+    JEWELRY_AND_WATCHES = 5;
+    CHILDREN_GOODS = 6;
+    SPORTS_AND_OUTDOORS = 7;
+    GROCERIES = 8;
+}
+
+message DecimalValue {
+    int64 units = 1;
+    sfixed32 nanos = 2;
+}
