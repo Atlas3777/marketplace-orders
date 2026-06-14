@@ -1,6 +1,0 @@
-@Marketplace.Orders.Api_HostAddress = http://localhost:5081
-
-GET {{Marketplace.Orders.Api_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
