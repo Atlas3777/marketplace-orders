@@ -15,6 +15,18 @@ var productsGrpcAddress = builder.Configuration["GrpcServices:Products"]
                           ?? "http://localhost:5107";
 
 var services = builder.Services;
+
+services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:5173")
+                .AllowAnyMethod()
+                .AllowAnyHeader();
+        });
+});
+
 services.AddControllers();
 services.AddEndpointsApiExplorer();
 services.AddSwaggerGen();
@@ -37,6 +49,7 @@ services.AddValidatorsFromAssemblyContaining<CreateOrderDtoValidator>();
 var app = builder.Build();
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
+app.UseCors("AllowAll");
 
 if (app.Environment.IsDevelopment())
 {
