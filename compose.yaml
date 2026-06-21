@@ -13,5 +13,15 @@ services:
     volumes:
       - orders_pgdata:/var/lib/postgresql/data
 
+  orders-redis:
+    image: redis:7-alpine
+    container_name: marketplace-orders-redis
+    restart: always
+    ports:
+      - "6380:6379"
+    volumes:
+      - orders_redisdata:/data
+
 volumes:
   orders_pgdata:
+  orders_redisdata:

@@ -1,16 +1,21 @@
 using Marketplace.Orders.Application;
-using Marketplace.Orders.Application.Implementation;
+using Microsoft.Extensions.Caching.Distributed;
 using Marketplace.Orders.Infrastructure.Helpers;
 using Marketplace.Orders.Infrastructure.Implementation;
 using Marketplace.Orders.Migrations.Migrations;
 using Marketplace.Orders.Application.Validators;
 using FluentValidation;
 using Marketplace.Orders.Api.Middleware;
+using Marketplace.Orders.Infrastructure.Cache;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var ordersConnectionString = builder.Configuration.GetConnectionString("OrdersDb")
                              ?? throw new InvalidOperationException("OrdersDb connection string is missing.");
+
+var redisConnectionString = builder.Configuration.GetConnectionString("Redis") 
+                            ?? "localhost:6380";
+
 var productsGrpcAddress = builder.Configuration["GrpcServices:Products"]
                           ?? "http://localhost:5107";
 
@@ -25,6 +30,12 @@ services.AddCors(options =>
                 .AllowAnyMethod()
                 .AllowAnyHeader();
         });
+});
+
+services.AddStackExchangeRedisCache(options =>
+{
+    options.Configuration = redisConnectionString;
+    options.InstanceName = "MarketplaceOrders_"; 
 });
 
 services.AddControllers();
@@ -42,7 +53,12 @@ services.AddGrpcClient<Marketplace.Products.Api.Protos.ProductServiceGrpc.Produc
 
 services.AddScoped<IProductGrpcClient, ProductGrpcClient>();
 
-services.AddScoped<OrderService>();
+services.AddScoped<OrderRepository>();
+services.AddScoped<IOrderRepository>(provider => 
+    new CachedOrderRepository(
+        provider.GetRequiredService<OrderRepository>(),
+        provider.GetRequiredService<IDistributedCache>()
+    ));
 
 services.AddValidatorsFromAssemblyContaining<CreateOrderDtoValidator>();
 
