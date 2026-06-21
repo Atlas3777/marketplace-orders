@@ -7,6 +7,9 @@ public class GetOrdersDtoValidator : AbstractValidator<GetOrdersDto>
 {
     public GetOrdersDtoValidator()
     {
+        RuleFor(x => x.UserId)
+            .NotEmpty().WithMessage("UserId не должен быть пустым.");
+        
         RuleFor(x => x.PageIndex)
             .GreaterThanOrEqualTo(0)
             .WithMessage("PageIndex должен быть больше или равен 0.");

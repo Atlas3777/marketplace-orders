@@ -48,6 +48,20 @@ public class ValidatorTests
             .WithErrorMessage("Количество товара должно быть больше 0.");
     }
 
+    [Fact]
+    public async Task GetOrdersDtoValidator_ShouldHaveError_WhenUserIdIsEmpty()
+    {
+        // Arrange
+        var dto = new GetOrdersDto(Guid.Empty, 0, 10);
+
+        // Act
+        var result = await _pagedValidator.TestValidateAsync(dto);
+
+        // Assert
+        result.ShouldHaveValidationErrorFor(x => x.UserId)
+            .WithErrorMessage("UserId не должен быть пустым.");
+    }
+
     [Theory]
     [InlineData(-1, 10, "PageIndex")] // Неверный индекс страницы
     [InlineData(0, 0, "PageSize")]   // Слишком маленький размер
@@ -55,10 +69,9 @@ public class ValidatorTests
     public async Task GetOrdersDtoValidator_ShouldHaveErrors_WhenPaginationIsInvalid(
         int pageIndex, int pageSize, string expectedErrorField)
     {
-        // Arrange
-        var dto = new GetOrdersDto(pageIndex, pageSize);
-
-        // Act
+        // Arrange & Act
+        // Передаем валидный UserId, чтобы тестировать исключительно параметры пагинации
+        var dto = new GetOrdersDto(Guid.NewGuid(), pageIndex, pageSize);
         var result = await _pagedValidator.TestValidateAsync(dto);
 
         // Assert

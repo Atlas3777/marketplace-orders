@@ -28,6 +28,7 @@ public class OrderServiceTests
     [Fact]
     public async Task CreateOrderAsync_ShouldCreateOrderSuccessfully_WhenProductsExist()
     {
+        // Arrange
         var userId = Guid.NewGuid();
         var productId1 = Guid.NewGuid();
         var productId2 = Guid.NewGuid();
@@ -98,15 +99,17 @@ public class OrderServiceTests
         int pageIndex, int pageSize, int expectedOffset, int expectedLimit)
     {
         // Arrange
+        var userId = Guid.NewGuid();
+
         _orderRepositoryMock
-            .Setup(repo => repo.GetPagedAsync(It.IsAny<int>(), It.IsAny<int>()))
+            .Setup(repo => repo.GetPagedAsync(userId, It.IsAny<int>(), It.IsAny<int>()))
             .ReturnsAsync(new List<Order>());
 
         // Act
-        await _orderService.GetOrdersPagedAsync(pageIndex, pageSize);
+        await _orderService.GetOrdersPagedAsync(userId, pageIndex, pageSize);
 
         // Assert
-        _orderRepositoryMock.Verify(repo => repo.GetPagedAsync(expectedOffset, expectedLimit), Times.Once);
+        _orderRepositoryMock.Verify(repo => repo.GetPagedAsync(userId, expectedOffset, expectedLimit), Times.Once);
     }
 
     [Fact]

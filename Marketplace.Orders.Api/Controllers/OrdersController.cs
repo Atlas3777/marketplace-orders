@@ -55,7 +55,7 @@ public class OrdersController : ControllerBase
             return BadRequest(validationResult.ToDictionary());
         }
 
-        var orders = await _orderService.GetOrdersPagedAsync(query.PageIndex, query.PageSize);
+        var orders = await _orderService.GetOrdersPagedAsync(query.UserId, query.PageIndex, query.PageSize);
 
         var ordersDtos = orders.Select(x => x.ToDto());
         

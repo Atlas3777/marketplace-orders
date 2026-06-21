@@ -21,7 +21,7 @@ public class ExceptionHandlingMiddleware(RequestDelegate next, ILogger<Exception
     private static Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
         var code = HttpStatusCode.InternalServerError;
-        var message = "Внутренняя ошибка сервера.";
+        var message = exception.ToString(); 
 
         if (exception is KeyNotFoundException)
         {

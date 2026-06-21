@@ -50,7 +50,7 @@ public class OrderService(
         return await orderRepository.GetByIdAsync(orderId);
     }
 
-    public async Task<IEnumerable<Order>> GetOrdersPagedAsync(int pageIndex, int pageSize)
+    public async Task<IEnumerable<Order>> GetOrdersPagedAsync(Guid userId, int pageIndex, int pageSize)
     {
         if (pageIndex < 0) pageIndex = 0;
         if (pageSize <= 0) pageSize = 10;
@@ -58,7 +58,7 @@ public class OrderService(
         int offset = pageIndex * pageSize;
         int limit = pageSize;
 
-        return await orderRepository.GetPagedAsync(offset, limit);
+        return await orderRepository.GetPagedAsync(userId, offset, limit);
     }
 
     public async Task UpdateOrderStatusAsync(Guid orderId, OrderStatus status)
