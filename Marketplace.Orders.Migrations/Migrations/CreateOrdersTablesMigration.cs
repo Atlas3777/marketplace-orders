@@ -2,7 +2,7 @@ using FluentMigrator;
 
 namespace Marketplace.Orders.Migrations.Migrations;
 
-[Migration(202606142107, "Create Orders Tables")]
+[Migration(202606220033, "Create Orders Tables")]
 public class CreateOrdersTablesMigration : Migration
 {
     public override void Down()
@@ -21,8 +21,8 @@ public class CreateOrdersTablesMigration : Migration
                 .WithColumn("id").AsGuid().PrimaryKey()
                 .WithColumn("userid").AsGuid().NotNullable()
                 .WithColumn("totalprice").AsDecimal().NotNullable()
-                .WithColumn("status").AsInt32().NotNullable().WithDefaultValue(1) // Добавили колонку статуса
-                .WithColumn("createdat").AsDateTime().NotNullable()
+                .WithColumn("status").AsInt32().NotNullable().WithDefaultValue(1) 
+                .WithColumn("createdat").AsDateTimeOffset().NotNullable()
                 .WithDefault(SystemMethods.CurrentUTCDateTime);
         }
 

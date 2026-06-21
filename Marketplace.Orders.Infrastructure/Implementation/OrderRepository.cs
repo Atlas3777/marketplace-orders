@@ -17,22 +17,22 @@ public class OrderRepository : IOrderRepository
     public async Task AddAsync(Order order)
     {
         using var connection = _connectionFactory.GetConnection();
-        connection.Open();
-        using var transaction = connection.BeginTransaction();
+        await connection.OpenAsync(); 
+        await using var transaction = await connection.BeginTransactionAsync(); 
 
         var orderSql = @"
-            INSERT INTO orders (id, userid, totalprice, status, createdat)
-            VALUES (@Id, @UserId, @TotalPrice, @Status, @CreatedAt)";
+        INSERT INTO orders (id, userid, totalprice, status, createdat)
+        VALUES (@Id, @UserId, @TotalPrice, @Status, @CreatedAt)";
 
         await connection.ExecuteAsync(orderSql, order, transaction);
 
         var itemSql = @"
-            INSERT INTO order_items (id, orderid, productid, quantity, price)
-            VALUES (@Id, @OrderId, @ProductId, @Quantity, @Price)";
+        INSERT INTO order_items (id, orderid, productid, quantity, price)
+        VALUES (@Id, @OrderId, @ProductId, @Quantity, @Price)";
 
         await connection.ExecuteAsync(itemSql, order.Items, transaction);
 
-        transaction.Commit();
+        await transaction.CommitAsync(); 
     }
 
     public async Task<Order?> GetByIdAsync(Guid id)

@@ -16,6 +16,16 @@ public static class MigrationRunner
         var serviceContext = CreateService(connectionString);
         using var scope = serviceContext.CreateScope();
         var runner = scope.ServiceProvider.GetRequiredService<IMigrationRunner>();
+        
+        try
+        {
+            runner.MigrateDown(0); 
+        }
+        catch (Exception ex)
+        {
+            // ignored(first run)
+        }
+
         runner.MigrateUp();
 
         return host;
