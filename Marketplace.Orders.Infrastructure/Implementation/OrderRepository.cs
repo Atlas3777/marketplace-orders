@@ -55,7 +55,8 @@ public class OrderRepository : IOrderRepository
     {
         using var connection = _connectionFactory.GetConnection();
         var sql = "SELECT id, userid, totalprice, status, createdat FROM orders WHERE userid = @UserId ORDER BY createdat DESC LIMIT @Limit OFFSET @Offset";
-        return await connection.QueryAsync<Order>(sql, new { Limit = limit, Offset = offset });
+    
+        return await connection.QueryAsync<Order>(sql, new { UserId = userId, Limit = limit, Offset = offset });
     }
 
     public async Task UpdateStatusAsync(Guid id, OrderStatus status)
