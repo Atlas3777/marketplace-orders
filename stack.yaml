@@ -9,7 +9,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Production
       - ConnectionStrings__OrdersDb=Host=orders-postgres;Port=5432;Database=marketplace-orders-db;Username=postgres;Password=postgres
       - ConnectionStrings__Redis=orders-redis:6379,abortConnect=false
-      - GrpcServices__Products=http://marketplace-products-api:8080
+      - GrpcServices__Products=https://ozoz-products.highload-study.ru
     deploy:
       replicas: 1
       labels:
