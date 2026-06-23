@@ -125,4 +125,69 @@ public class OrderServiceTests
         // Assert
         _orderRepositoryMock.Verify(repo => repo.UpdateStatusAsync(orderId, newStatus), Times.Once);
     }
+    
+    [Fact]
+    public async Task GetOrderAsync_ShouldReturnOrder_WhenOrderExists()
+    {
+        // Arrange
+        var orderId = Guid.NewGuid();
+        var expectedOrder = new Order { Id = orderId, UserId = Guid.NewGuid() };
+
+        _orderRepositoryMock
+            .Setup(repo => repo.GetByIdAsync(orderId))
+            .ReturnsAsync(expectedOrder);
+
+        // Act
+        var result = await _orderService.GetOrderAsync(orderId);
+
+        // Assert
+        result.Should().NotBeNull();
+        result!.Id.Should().Be(orderId);
+        _orderRepositoryMock.Verify(repo => repo.GetByIdAsync(orderId), Times.Once);
+    }
+
+    [Fact]
+    public async Task GetOrderAsync_ShouldReturnNull_WhenOrderDoesNotExist()
+    {
+        // Arrange
+        var orderId = Guid.NewGuid();
+        _orderRepositoryMock
+            .Setup(repo => repo.GetByIdAsync(orderId))
+            .ReturnsAsync((Order?)null);
+
+        // Act
+        var result = await _orderService.GetOrderAsync(orderId);
+
+        // Assert
+        result.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task CreateOrderAsync_ShouldCalculateTotalPriceCorrectly_ForMultipleItemsOfSameAndDifferentProducts()
+    {
+        // Arrange
+        var userId = Guid.NewGuid();
+        var prodId1 = Guid.NewGuid();
+        var prodId2 = Guid.NewGuid();
+
+        var dto = new CreateOrderDto(userId, new List<CreateOrderItemDto>
+        {
+            new(prodId1, 3), // 3 * 100 = 300
+            new(prodId2, 2)  // 2 * 250 = 500. Итого = 800
+        });
+
+        _productGrpcClientMock.Setup(x => x.GetProductByIdAsync(prodId1))
+            .ReturnsAsync(new ProductInfo(prodId1, 100.00m));
+        _productGrpcClientMock.Setup(x => x.GetProductByIdAsync(prodId2))
+            .ReturnsAsync(new ProductInfo(prodId2, 250.00m));
+
+        // Act
+        var orderId = await _orderService.CreateOrderAsync(dto);
+
+        // Assert
+        _orderRepositoryMock.Verify(repo => repo.AddAsync(It.Is<Order>(order =>
+            order.TotalPrice == 800.00m &&
+            order.Items.Count == 2
+        )), Times.Once);
+    }
 }

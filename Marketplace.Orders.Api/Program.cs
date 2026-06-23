@@ -67,7 +67,7 @@ services.AddScoped<IOrderRepository>(provider =>
         provider.GetRequiredService<IDistributedCache>()
     ));
 
-services.AddScoped<OrderService>();
+services.AddScoped<IOrderService, OrderService>();
 
 services.AddValidatorsFromAssemblyContaining<CreateOrderDtoValidator>();
 

@@ -57,7 +57,6 @@ docker compose up -d
 
 ```bash
 dotnet run --project Marketplace.Orders.Api
-
 ```
 
 ### 4. Использование API
@@ -70,7 +69,3 @@ dotnet run --project Marketplace.Orders.Api
 * `GET /api/v1/orders/{id}` — Получение детальной информации о заказе по его Идентификатору (с поддержкой кэширования).
 * `GET /api/v1/orders` — Постраничное получение списка заказов пользователя (`UserId`, `PageIndex`, `PageSize`).
 * `HttpPatch /api/v1/orders/{id}/status` — Обновление статуса заказа (с автоматическим сбросом устаревшего кэша).
-
-```
-
-```

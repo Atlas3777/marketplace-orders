@@ -5,7 +5,7 @@ namespace Marketplace.Orders.Application.Implementation;
 
 public class OrderService(
     IOrderRepository orderRepository,
-    IProductGrpcClient productClient)
+    IProductGrpcClient productClient) : IOrderService
 {
     public async Task<Guid> CreateOrderAsync(CreateOrderDto dto)
     {

@@ -3,18 +3,19 @@ using Marketplace.Orders.Application.DTOs;
 using Marketplace.Orders.Application.Implementation;
 using FluentValidation;
 using Marketplace.Orders.Api.Mappers;
+using Marketplace.Orders.Application;
 
 namespace Marketplace.Orders.Api.Controllers;
 [ApiController]
 [Route("api/v1/orders")]
 public class OrdersController : ControllerBase
 {
-    private readonly OrderService _orderService;
+    private readonly IOrderService _orderService;
     private readonly IValidator<CreateOrderDto> _createValidator;
     private readonly IValidator<GetOrdersDto> _getOrdersValidator;
 
     public OrdersController(
-        OrderService orderService, 
+        IOrderService orderService, 
         IValidator<CreateOrderDto> createValidator,
         IValidator<GetOrdersDto> getOrdersValidator)
     {
