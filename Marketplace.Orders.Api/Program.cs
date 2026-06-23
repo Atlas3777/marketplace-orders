@@ -35,8 +35,7 @@ services.AddCors(options =>
     options.AddPolicy("AllowAll",
         policy =>
         {
-            policy.WithOrigins("http://ozoz.highload-study.ru:8081", 
-                    "https://ozoz.highload-study.ru")
+            policy.WithOrigins("https://ozoz.highload-study.ru")
                 .AllowAnyMethod()
                 .AllowAnyHeader();
         });
