@@ -35,7 +35,9 @@ services.AddCors(options =>
     options.AddPolicy("AllowAll",
         policy =>
         {
-            policy.AllowAnyOrigin();
+            policy.AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader();
         });
 });
 
