@@ -1,0 +1,50 @@
+version: "3.9"
+
+services:
+  orders-api:
+    image: atlas3777/marketplace-orders-api:latest
+    networks:
+      - traefik_proxy
+      - orders_network
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__OrdersDb=Host=orders-postgres;Port=5432;Database=marketplace-orders-db;Username=postgres;Password=postgres
+      - ConnectionStrings__Redis=orders-redis:6379,abortConnect=false
+      - GrpcServices__Products=http://marketplace-products-api:8080
+    deploy:
+      replicas: 1
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.orders-service-unique.rule=Host(`orders-api.highload-study.ru`)"
+        - "traefik.http.routers.orders-service-unique.entrypoints=websecure"
+        - "traefik.http.routers.orders-service-unique.tls=true"
+        - "traefik.http.routers.orders-service-unique.tls.certresolver=letresolver"
+        - "traefik.http.services.orders-service-unique.loadbalancer.server.port=8080"
+
+  orders-postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: marketplace-orders-db
+    networks:
+      - orders_network
+    volumes:
+      - orders_pgdata:/var/lib/postgresql/data
+
+  orders-redis:
+    image: redis:7-alpine
+    networks:
+      - orders_network
+    volumes:
+      - orders_redisdata:/data
+
+volumes:
+  orders_pgdata:
+  orders_redisdata:
+
+networks:
+  traefik_proxy:
+    external: true
+  orders_network:
+    driver: overlay
